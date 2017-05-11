@@ -15,19 +15,19 @@ import time
 import datetime
 
 def getForecastXMLFromAPI():
-  # try:
-  response = urllib.request.urlopen('http://api.openweathermap.org/data/2.5/forecast?q=Stuttgart,de&mode=xml&appid=' + login.appid)
-  # except urllib.error.HTTPError, err:
-  #    if err.code == 404:
-  #        return "error 404"
-  #    elif err.code == 403:
-  #        return "error 403"
-  #    else:
-  #        r =  "error! Error code", err.code
-  #        return r
-  # except urllib2.URLError, err:
-  #     r = "error happened:", err.reason
-  #     return r
+  try:
+    response = urllib.request.urlopen('http://api.openweathermap.org/data/2.5/forecast?q=Stuttgart,de&mode=xml&appid=' + login.appid)
+  except urllib.error.HTTPError as err:
+    if err.code == 404:
+      return "error 404"
+    elif err.code == 403:
+      return "error 403"
+    else:
+      r =  "error! Error code", err.code
+      return r
+  except urllib.error.URLError as err:
+    r = "error happened:", err.reason
+    return r
   
   xml2 = response.read()
   response.close()
@@ -35,20 +35,20 @@ def getForecastXMLFromAPI():
 
 
 def getWeatherXMLFromAPI():
-  # try:
-  response = urllib.request.urlopen('http://api.openweathermap.org/data/2.5/weather?q=Stuttgart,de&mode=xml&appid=' + login.appid)
-  # except urllib2.HTTPError, err:
-  #    if err.code == 404:
-  #        return "error 404"
-  #    elif err.code == 403:
-  #        return "error 403"
-  #    else:
-  #        r =  "error! Error code", err.code
-  #        return r
-  # except urllib2.URLError, err:
-  #     r = "error happened:", err.reason
-  #     return r
-
+  try:
+    response = urllib.request.urlopen('http://api.openweathermap.org/data/2.5/weather?q=Stuttgart,de&mode=xml&appid=' + login.appid)
+  except urllib.error.HTTPError as err:
+    if err.code == 404:
+      return "error 404"
+    elif err.code == 403:
+      return "error 403"
+    else:
+      r =  "error! Error code", err.code
+      return r
+  except urllib.error.URLError as err:
+    r = "error happened:", err.reason
+    return r
+    
   xml2 = response.read()
   response.close()
   return xml2
@@ -213,16 +213,22 @@ def getHumArrayForPlot( conn ):
 
 conn = connectToDatabase()
 xmlForecast = getForecastXMLFromAPI()
-# if( not xmlForecast.startswith( 'error' )):
-root = ET.fromstring(xmlForecast)
-insertSunData( root , conn )
-insertForecastData( root , conn )
+if( not xmlForecast.startswith( b'error' )):
+  root = ET.fromstring(xmlForecast)
+  insertSunData( root , conn )
+  insertForecastData( root , conn )
+else:
+  # ToDo SendMail with ErrorCode or write in Database
+  print('Error')
 
 xmlNow = getWeatherXMLFromAPI()
-# if( not xmlNow.startswith( 'error' )):
-root = ET.fromstring(xmlNow)
-updateSunData( root , conn )
-updateForecastData( root , conn )
+if( not xmlNow.startswith( b'error' )):
+  root = ET.fromstring(xmlNow)
+  updateSunData( root , conn )
+  updateForecastData( root , conn )
+else:
+  # ToDo SendMail with ErrorCode or write in Database
+  print('Error')
 
 
 #cursor = conn.execute('SELECT strftime(\'%Y-%m-%d %H:%M:%S\',TIMEOFVALUES) , TEMPMIN , TEMPMAX , TEMPVALUE , TEMPREAL , NAME , PREVALUE , PRETYPE , PREREAL , WINDSPEED , WINDNAME , WINDREAL , PRESSUREVALUE , PRESSUREREAL , HUMVALUE , HUMREAL , CLOUDVALUE , CLOUDALL , CLOUDREAL FROM WEATHERDATA;')
@@ -275,4 +281,4 @@ text = """
 plotting_graph.plot(temp,hum)
 attach = 'plot.png'
 
-send_mail.send(mail_sender, mail_receiver, text, attach)
+#send_mail.send(mail_sender, mail_receiver, text, attach)
