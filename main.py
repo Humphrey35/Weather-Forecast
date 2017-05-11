@@ -225,7 +225,7 @@ updateSunData( root , conn )
 updateForecastData( root , conn )
 
 
-cursor = conn.execute('SELECT strftime(\'%Y-%m-%d %H:%M:%S\',TIMEOFVALUES) , TEMPMIN , TEMPMAX , TEMPVALUE , TEMPREAL , NAME , PREVALUE , PRETYPE , PREREAL , WINDSPEED , WINDNAME , WINDREAL , PRESSUREVALUE , PRESSUREREAL , HUMVALUE , HUMREAL , CLOUDVALUE , CLOUDALL , CLOUDREAL FROM WEATHERDATA;')
+#cursor = conn.execute('SELECT strftime(\'%Y-%m-%d %H:%M:%S\',TIMEOFVALUES) , TEMPMIN , TEMPMAX , TEMPVALUE , TEMPREAL , NAME , PREVALUE , PRETYPE , PREREAL , WINDSPEED , WINDNAME , WINDREAL , PRESSUREVALUE , PRESSUREREAL , HUMVALUE , HUMREAL , CLOUDVALUE , CLOUDALL , CLOUDREAL FROM WEATHERDATA;')
 # for row in cursor:
 #   print "------------------------------------------------------"
 #   print "TIMEOFVALUES= "+str(row[0])
@@ -272,7 +272,7 @@ text = """
 """
 
 # Plotting and attaching
-plotting_graph.plot([14,15,16,20,25],[45,60,74,50,70])
+plotting_graph.plot(temp,hum)
 attach = 'plot.png'
 
 send_mail.send(mail_sender, mail_receiver, text, attach)
